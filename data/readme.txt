@@ -1,0 +1,8 @@
+Data format:
+
+cinema		cinemaCode, cinemaRow, cinemaColumn, cinemaClass, cineplex
+cineplex	cineplexName
+goer		goerName, goerEmail, goerPhone, goerClass
+movie		movieName, movieStatus, movieRating, movieType
+show		showMovie, showDate, showTime, showCineplex, showCinema
+booking 	transactionId, bookingGoer, bookingSeat, bookingShow, bookingPayment

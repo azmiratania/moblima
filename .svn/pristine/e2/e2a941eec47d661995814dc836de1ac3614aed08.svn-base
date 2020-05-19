@@ -1,0 +1,102 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+
+public class ReadData {
+	public static ArrayList<MovieItem> readMovie(){
+		ArrayList<MovieItem> movieList = new ArrayList<MovieItem>();
+		try (BufferedReader br = new BufferedReader(new FileReader("C:\\data\\movie.txt"))){
+			String currentLine = br.readLine();
+			while (currentLine!=null){
+				String[] att = currentLine.split(",");
+				MovieItem m1= new MovieItem(att[0],Integer.parseInt(att[1]),Integer.parseInt(att[2]),Integer.parseInt(att[3]));
+				movieList.add(m1);
+				currentLine = br.readLine();
+			}
+			return movieList;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return movieList;
+	}
+	
+	public static ArrayList<GoerItem> readGoer(){
+		ArrayList<GoerItem> goerList = new ArrayList<GoerItem>();
+		try (BufferedReader br = new BufferedReader(new FileReader("C:\\data\\goer.txt"))){
+			String currentLine = br.readLine();
+			while (currentLine!=null){
+				String[] att = currentLine.split(",");
+				GoerItem m1= new GoerItem(att[0],att[1],att[2],Integer.parseInt(att[3]));
+				goerList.add(m1);
+				currentLine = br.readLine();
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return goerList;
+	}
+	
+	public static ArrayList<CineplexItem> readCineplex(){
+		ArrayList<CineplexItem> cineplexList = new ArrayList<CineplexItem>();
+		try (BufferedReader br = new BufferedReader(new FileReader("C:\\data\\cineplex.txt"))){
+			String currentLine = br.readLine();
+			while (currentLine!=null){
+				String[] att = currentLine.split(",");
+				CineplexItem m1= new CineplexItem(att[0]);
+				cineplexList.add(m1);
+				currentLine = br.readLine();
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return cineplexList;
+	}	
+	
+	public static ArrayList<ShowItem> readShow(){
+		ArrayList<ShowItem> showList = new ArrayList<ShowItem>();
+		try (BufferedReader br = new BufferedReader(new FileReader("C:\\data\\show.txt"))){
+			String currentLine = br.readLine();
+			while (currentLine!=null){
+				String[] att = currentLine.split(",");
+				ShowItem m = new ShowItem(MoblimaApp.movieList.get(Integer.parseInt(att[0])),att[1],att[2],MoblimaApp.cineplexList.get(Integer.parseInt(att[3])),MoblimaApp.cinemaList.get(Integer.parseInt(att[4])));
+				showList.add(m);
+				currentLine = br.readLine();
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return showList;
+	}
+
+	public static ArrayList<CinemaItem> readCinema() {
+		ArrayList<CinemaItem> cinemaList = new ArrayList<CinemaItem>();
+		try (BufferedReader br = new BufferedReader(new FileReader("C:\\data\\cinema.txt"))){
+			String currentLine = br.readLine();
+			while (currentLine!=null){
+				String[] att = currentLine.split(",");
+				CinemaItem m1= new CinemaItem(MoblimaApp.cineplexList.get(Integer.parseInt(att[0])), 	//cineplex
+										att[1],													//code
+										Integer.parseInt(att[2]),								//column
+										Integer.parseInt(att[3]),								//row
+										Integer.parseInt(att[4]));								//class
+				cinemaList.add(m1);
+				currentLine = br.readLine();
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return cinemaList;
+	}	
+}

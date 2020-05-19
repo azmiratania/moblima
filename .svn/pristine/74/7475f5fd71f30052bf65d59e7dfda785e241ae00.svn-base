@@ -1,0 +1,8 @@
+
+public class test {
+	public static void main(String[] arg){
+		String a = "email@";
+		String b = "email@";
+		System.out.println(a.equals(b));
+	}
+}

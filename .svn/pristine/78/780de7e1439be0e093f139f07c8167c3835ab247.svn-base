@@ -1,0 +1,46 @@
+import java.util.Scanner;
+
+
+public class ManageGoer {
+	
+	
+	public static GoerItem searchGoer(String email){
+		for (int i = 0 ; i < MoblimaApp.goerList.size(); i++){
+			if (MoblimaApp.goerList.get(i).getGoerEmail().equals(email)==true){
+				return MoblimaApp.goerList.get(i);
+			}
+		}
+		return null;
+	}
+	
+	public static GoerItem newGoer(String name, String email, String phone, int type){
+		GoerItem goer = new GoerItem(name, phone, email, type); 
+		MoblimaApp.goerList.add(goer);
+		return goer;
+	}
+	
+	public static void getGoerHistory(){
+		Scanner sc = new Scanner(System.in);	
+		System.out.println("Enter your email address: ");
+		String email = sc.nextLine();
+		GoerItem goer = searchGoer(email);
+		if (goer==null){
+			System.out.println("Sorry, your record is not found!");
+		} else {
+			showGoerHistory(goer);
+		}
+	}
+	
+	public static void showGoerHistory(GoerItem goer){
+		System.out.println("--------------History--------------");
+		int no = goer.getGoerbooking().size();
+		if (no == 0){
+			System.out.println("No record found!");
+		} else {
+			for (int i =0 ; i <goer.getGoerbooking().size(); i ++){
+				goer.getGoerbooking().get(i).printBooking();
+			}
+		}
+		System.out.println("-------------------------------");
+	}
+}

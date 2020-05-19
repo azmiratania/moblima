@@ -1,0 +1,45 @@
+import java.util.ArrayList;
+
+
+public class Function {
+	public static void movieListing(){
+		//list all movie
+		System.out.println("ID\tMovie Name\t\tType Rating \t Status");
+		System.out.println("--------------------------------------------------------------");
+		for (int i=0;i<MoblimaApp.movieList.size();i++){
+			System.out.println(i+"\t"+MoblimaApp.movieList.get(i).getMovieInfo());
+		}
+		System.out.println();
+	}
+	
+	public static boolean showListing(int movieIndex){
+		//list all show, filter by movieIndex
+		
+		ArrayList<ShowItem> showList = MoblimaApp.movieList.get(movieIndex).getMovieShowList();
+		if (showList == null){
+			System.out.println("No showtime for this movie at this moment");
+			return false;
+		} else {
+			System.out.println("ID\tDate\t\tTime\tCinema\tCineplex");
+			System.out.println("--------------------------------------------------------------");
+			for (int i=0;i<showList.size();i++){
+				System.out.println(i+"\t"+showList.get(i).getShowInfo());
+			}
+		}
+		return true;
+	}
+	public static void cineplexListing(){
+		//list all cineplex if cineplex
+		for (int i = 0 ; i <MoblimaApp.cineplexList.size(); i++){
+			System.out.println(i+"  "+MoblimaApp.cineplexList.get(i).getCineplexName());
+		}
+		
+	}
+	public static void cinemaListing(CineplexItem cineplex){
+		//list all cineplex
+		for (int i = 0 ; i <cineplex.getCineplexCinema().size(); i++){
+			System.out.println(i+"  "+ cineplex.getCineplexCinema().get(i).getCinemaInfo() );
+		}
+		
+	}
+}

@@ -1,0 +1,319 @@
+import java.awt.Choice;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.ScrollPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
+
+
+public class ManageBookingUI{
+	static Box wholeContent = Box.createVerticalBox();
+	static Choice cineplexList = new Choice();
+	static Choice movieList = new Choice();
+	static Box searchBox = Box.createHorizontalBox();
+	static JButton confirmButton = new JButton("Confirm");
+	static Box display = Box.createHorizontalBox();
+	static Box displayBox = Box.createVerticalBox();
+	
+	public static void book()
+	{
+
+		 JFrame frame = new JFrame("MOBILIMA");
+		 frame.setBounds(300,300,1000,300);
+		 //Box wholeContent = Box.createVerticalBox();
+		 
+		 ///// Search Box /////
+		 //Box searchBox = Box.createHorizontalBox();
+		 //final Choice cineplexList = new Choice();
+		 
+		 // add cineplex to cineplex list ///
+		 cineplexList.add("All");
+		 for (int i=0; i<MoblimaApp.cineplexList.size();i++)
+			 cineplexList.add(MoblimaApp.cineplexList.get(i).getCineplexName());
+		 //final Choice movieList = new Choice();
+		 
+		 
+		 /// add movie to movie list///
+		 movieList.add("All");
+		 for (int i=0; i<MoblimaApp.movieList.size();i++)
+			 movieList.add(MoblimaApp.movieList.get(i).getMovieName());
+		 
+		 //// add rigid to align inside search box////
+		 searchBox.add(new JLabel("Cineplex"));
+		 searchBox.add(Box.createRigidArea(new Dimension(10,2)));
+		 searchBox.add(cineplexList);
+		 searchBox.add(Box.createRigidArea(new Dimension(10,2)));
+		 searchBox.add(new JLabel("Movie"));
+		 searchBox.add(Box.createRigidArea(new Dimension(10,2)));
+		 searchBox.add(movieList);
+		 searchBox.add(Box.createRigidArea(new Dimension(10,2)));
+		 searchBox.setBackground(Color.WHITE);
+		 
+		 ///  Listener for cineplex List //////
+		 cineplexList.addItemListener(new ItemListener()
+         {
+                         public void itemStateChanged(ItemEvent e)
+                         {
+                           
+                         }
+         });
+		 
+		 movieList.addItemListener(new ItemListener()
+         {
+                         public void itemStateChanged(ItemEvent e)
+                         {
+                                         
+                         }
+         });
+		 searchBox.add(confirmButton);
+		 confirmButton.addActionListener(new ActionListener()
+         {
+                         public void actionPerformed(ActionEvent e)
+                         {
+                        	 
+                        	 int movieChoice = movieList.getSelectedIndex()-1;
+                        	 int cineplexChoice = cineplexList.getSelectedIndex()-1;
+                        	 displayBox.removeAll();
+                        	 display(cineplexChoice,movieChoice);
+                        	 displayBox.revalidate();
+                         }
+         });
+		 
+		 /////End of Search Box //////
+		 
+		 ////Display Box /////
+
+		 displayBox.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		 ScrollPane s = new ScrollPane();
+		 
+	     wholeContent.add(searchBox);
+	     wholeContent.add(display);
+	     s.add(wholeContent);
+	     frame.add(s);
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         //frame.pack();
+         
+         frame.setVisible(true);
+}
+	private static void display (int cineplexChoice, int movieChoice)
+	{
+		
+		 
+		 if (movieChoice ==-1&& cineplexChoice !=-1)
+		 {
+			for (int i =0; i< MoblimaApp.cineplexList.get(cineplexChoice).getMovie().size();i++)
+			{
+				 JPanel moviePanel = new JPanel();
+				 
+				 moviePanel.setLayout(new GridLayout(0,1));
+				 moviePanel.setBorder(BorderFactory.createTitledBorder(MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(i).getMovieName()));
+				 				 
+				 for (int j =0; j <MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(i).getMovieDate().size();j++)
+				 {
+					 JPanel datePanel = new JPanel();
+					 datePanel.setLayout(new GridLayout(1,2));
+					 Box temp1= Box.createHorizontalBox();
+					 Box temp2= Box.createHorizontalBox();
+					 datePanel.add(temp1);
+					 datePanel.add(temp2);
+					 for (int k=0; k <MoblimaApp.showList.size();k++)
+					 {
+						 if (MoblimaApp.cineplexList.get(cineplexChoice).equals(MoblimaApp.showList.get(k).getShowCineplex()) 
+								 && MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(i).getMovieDate().get(j).equals(MoblimaApp.showList.get(k).getShowDate()) 
+								 && MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(i).equals(MoblimaApp.showList.get(k).getShowMovie()))
+						 {
+							 
+							 JButton temp = new JButton((MoblimaApp.showList.get(k).getShowTime()));
+							 temp2.add(temp);
+							 temp.setForeground(Color.BLACK);
+							 temp.setBackground(Color.WHITE);
+							 Border line = new LineBorder(Color.WHITE);
+							 Border margin = new EmptyBorder(5, 15, 5, 15);
+							 Border compound = new CompoundBorder(line, margin);
+							 temp.setBorder(compound);
+							 moviePanel.add(datePanel);
+							 
+						 }
+					 }
+					 temp1.add(new JLabel(Function.printDate(MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(i).getMovieDate().get(j))));
+				 }
+				
+				 displayBox.add(moviePanel);
+				 displayBox.setVisible(true);
+			}
+		 }
+		 
+		 if (movieChoice ==-1&& cineplexChoice ==-1)
+		 {
+			for (int n=0; n<MoblimaApp.cineplexList.size();n++)
+			{
+			JPanel cineplexPanel = new JPanel();
+			cineplexPanel.setLayout(new GridLayout(0,1));
+			cineplexPanel.setBorder(BorderFactory.createTitledBorder(MoblimaApp.cineplexList.get(n).getCineplexName()));
+			for (int i =0; i< MoblimaApp.cineplexList.get(n).getMovie().size();i++)
+			{
+				 JPanel moviePanel = new JPanel();
+				 
+				 moviePanel.setLayout(new GridLayout(0,1));
+				 moviePanel.setBorder(BorderFactory.createTitledBorder(MoblimaApp.cineplexList.get(n).getMovie().get(i).getMovieName()));
+				 				 
+				 for (int j =0; j <MoblimaApp.cineplexList.get(n).getMovie().get(i).getMovieDate().size();j++)
+				 {
+					 JPanel datePanel = new JPanel();
+					 datePanel.setLayout(new GridLayout(1,2));
+					 Box temp1= Box.createHorizontalBox();
+					 Box temp2= Box.createHorizontalBox();
+					 datePanel.add(temp1);
+					 datePanel.add(temp2);
+					 for (int k=0; k < MoblimaApp.showList.size();k++)
+					 {
+						 if (MoblimaApp.cineplexList.get(n).equals(MoblimaApp.showList.get(k).getShowCineplex()) 
+							 && MoblimaApp.cineplexList.get(n).getMovie().get(i).getMovieDate().get(j).equals(MoblimaApp.showList.get(k).getShowDate()) 
+							 && MoblimaApp.cineplexList.get(n).getMovie().get(i).equals(MoblimaApp.showList.get(k).getShowMovie()))
+						 {
+							 
+							 JButton temp = new JButton((MoblimaApp.showList.get(k).getShowTime()));
+							 temp.setForeground(Color.BLACK);
+							 temp.setBackground(Color.WHITE);
+							 Border line = new LineBorder(Color.WHITE);
+							 Border margin = new EmptyBorder(5, 15, 5, 15);
+							 Border compound = new CompoundBorder(line, margin);
+							 temp.setBorder(compound);
+							 temp2.add(temp);
+							 moviePanel.add(datePanel);
+							 
+						 }
+					 }
+					 temp1.add(new JLabel(Function.printDate(MoblimaApp.cineplexList.get(n).getMovie().get(i).getMovieDate().get(j))));
+				 }
+				 cineplexPanel.add(moviePanel);
+				 displayBox.add(cineplexPanel);
+				 displayBox.setVisible(true);
+			}
+		 }
+		 }
+		 
+		 if (movieChoice !=-1&& cineplexChoice ==-1)
+		 {
+			for (int n=0; n<MoblimaApp.cineplexList.size();n++)
+			{
+			
+			if (MoblimaApp.cineplexList.get(n).getMovie().contains(MoblimaApp.movieList.get(movieChoice)))
+			{
+				int pos=0;
+				JPanel cineplexPanel = new JPanel();
+				cineplexPanel.setLayout(new GridLayout(0,1));
+				cineplexPanel.setBorder(BorderFactory.createTitledBorder(MoblimaApp.cineplexList.get(n).getCineplexName()));
+				if (MoblimaApp.cineplexList.get(n).getMovie().contains(MoblimaApp.movieList.get(movieChoice)))
+				{
+				for (int i=0;i<MoblimaApp.cineplexList.get(n).getMovie().size();i++)
+					if (MoblimaApp.cineplexList.get(n).getMovie().get(i).equals(MoblimaApp.movieList.get(movieChoice)))
+					{
+						pos = i;
+						break;
+					}
+				 for (int j =0; j <MoblimaApp.cineplexList.get(n).getMovie().get(pos).getMovieDate().size();j++)
+				 {
+					 JPanel datePanel = new JPanel();
+					 datePanel.setLayout(new GridLayout(1,2));
+					 Box temp1= Box.createHorizontalBox();
+					 Box temp2= Box.createHorizontalBox();
+					 datePanel.add(temp1);
+					 datePanel.add(temp2);
+					 for (int k=0; k < MoblimaApp.showList.size();k++)
+					 {
+						 if (MoblimaApp.cineplexList.get(n).equals(MoblimaApp.showList.get(k).getShowCineplex()) 
+							 && MoblimaApp.cineplexList.get(n).getMovie().get(pos).getMovieDate().get(j).equals(MoblimaApp.showList.get(k).getShowDate()) 
+							 && MoblimaApp.cineplexList.get(n).getMovie().get(pos).equals(MoblimaApp.showList.get(k).getShowMovie()))
+						 {
+							 
+							 JButton temp = new JButton((MoblimaApp.showList.get(k).getShowTime()));
+							 temp.setForeground(Color.BLACK);
+							 temp.setBackground(Color.WHITE);
+							 Border line = new LineBorder(Color.WHITE);
+							 Border margin = new EmptyBorder(5, 15, 5, 15);
+							 Border compound = new CompoundBorder(line, margin);
+							 temp.setBorder(compound);
+							 temp2.add(temp);	 
+							 cineplexPanel.add(datePanel);
+							 
+						 }
+					 }
+					 temp1.add(new JLabel(Function.printDate(MoblimaApp.cineplexList.get(n).getMovie().get(pos).getMovieDate().get(j))));
+				 }
+				}
+				 displayBox.add(cineplexPanel);
+				 displayBox.setVisible(true);
+			}
+		 }
+		 }
+		 
+		 if (movieChoice !=-1&& cineplexChoice !=-1)
+		 {
+				int pos=0;
+				JPanel cineplexPanel = new JPanel();
+				cineplexPanel.setLayout(new GridLayout(0,1));
+				cineplexPanel.setBorder(BorderFactory.createTitledBorder(MoblimaApp.cineplexList.get(cineplexChoice).getCineplexName()));
+				if (MoblimaApp.cineplexList.get(cineplexChoice).getMovie().contains(MoblimaApp.movieList.get(movieChoice)))
+				{
+				for (int i=0;i<MoblimaApp.cineplexList.get(cineplexChoice).getMovie().size();i++)
+					if (MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(i).equals(MoblimaApp.movieList.get(movieChoice)))
+					{
+						pos = i;
+						break;
+					}
+				 for (int j =0; j <MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(pos).getMovieDate().size();j++)
+				 {
+					 JPanel datePanel = new JPanel();
+					 datePanel.setLayout(new GridLayout(1,2));
+					 Box temp1= Box.createHorizontalBox();
+					 Box temp2= Box.createHorizontalBox();
+					 datePanel.add(temp1);
+					 datePanel.add(temp2);
+					 for (int k=0; k < MoblimaApp.showList.size();k++)
+					 {
+						 if (MoblimaApp.cineplexList.get(cineplexChoice).equals(MoblimaApp.showList.get(k).getShowCineplex()) 
+							 && MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(pos).getMovieDate().get(j).equals(MoblimaApp.showList.get(k).getShowDate()) 
+							 && MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(pos).equals(MoblimaApp.showList.get(k).getShowMovie()))
+						 {
+							 
+							 JButton temp = new JButton((MoblimaApp.showList.get(k).getShowTime()));
+							 temp.setForeground(Color.BLACK);
+							 temp.setBackground(Color.WHITE);
+							 Border line = new LineBorder(Color.WHITE);
+							 Border margin = new EmptyBorder(5, 15, 5, 15);
+							 Border compound = new CompoundBorder(line, margin);
+							 temp.setBorder(compound);
+							 temp2.add(temp);	 
+							 cineplexPanel.add(datePanel);
+							 
+						 }
+					 }
+					 temp1.add(new JLabel(Function.printDate(MoblimaApp.cineplexList.get(cineplexChoice).getMovie().get(pos).getMovieDate().get(j))));
+				 }
+				}
+				 displayBox.add(cineplexPanel);
+				 displayBox.setVisible(true);
+			}
+		 display.add(displayBox);
+	}
+
+		
+}
+

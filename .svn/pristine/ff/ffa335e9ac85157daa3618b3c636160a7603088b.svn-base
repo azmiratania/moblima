@@ -1,0 +1,37 @@
+import java.util.ArrayList;
+
+
+public class CineplexItem {
+	private String cineplexName;
+	private ArrayList<Cinema> cineplexCinema;
+	private ArrayList<ShowItem> cineplexShow;
+	
+	public CineplexItem(String n){
+		cineplexName = n;
+		cineplexShow = new ArrayList<ShowItem>();
+		cineplexCinema = new ArrayList<Cinema>();
+	}
+	
+	public String getCineplexName(){
+		return cineplexName;
+	} 
+	public ArrayList<Cinema> getCineplexCinema(){
+		return cineplexCinema;
+	} 
+	public void setCineplexName(String n)
+	{
+		this.cineplexName= n;
+	} 
+	public ArrayList<ShowItem> getCineplexShow()
+	{
+		return cineplexShow;
+	}
+	public void addShow(ShowItem s){
+		cineplexShow.add(s);
+	}
+	public void addCinema(Cinema c){
+		cineplexCinema.add(c);
+	}
+	
+	
+}

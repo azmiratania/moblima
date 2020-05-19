@@ -1,0 +1,66 @@
+import java.util.ArrayList;
+
+
+public class ShowItem {
+	private MovieItem showMovie;
+	private String showDate;
+	private String showTime;
+	private CineplexItem showCineplex;
+	private CinemaItem showCinema;
+	private ArrayList<BookingItem> showBooking;
+	
+	public ShowItem(MovieItem m, String d, String t, CineplexItem c, Cinema h){
+		showMovie = m;
+		showCineplex = c;
+		showTime = t;
+		showDate = d;
+		showCinema = new CinemaItem(h);
+		showBooking = new ArrayList<BookingItem>();
+		// add to Movie and Cineplex
+		showCineplex.addShow(this);
+		showMovie.addMovieShow(this);
+	}
+	
+	public MovieItem getShowMovie(){
+		return showMovie;
+	}
+	public String getShowDate(){
+		return showDate;
+	}
+	public String getShowTime(){
+		return showTime;
+	}
+	public CineplexItem getShowCineplex(){
+		return showCineplex;
+	}
+	public CinemaItem getShowCinema(){
+		return showCinema;
+	}
+	public ArrayList<BookingItem> getShowBooking(){
+		return showBooking;
+	}
+	public String getShowInfo(){
+		return showDate+"\t"+showTime+"\t"+showCinema.getCinema().getCinemaCode()+"\t"+showCineplex.getCineplexName();
+	}
+	
+	public void setShowMovie(MovieItem m){
+		showMovie = m;
+	}
+	public void getShowDate(String d){
+		showDate = d;
+	}
+	public void getShowTime(String t){
+		showTime = t;
+	}
+	public void getShowCineplex(CineplexItem c){
+		showCineplex = c;
+	}
+	public void getShowCinema(CinemaItem c){
+		showCinema = c;
+	}
+	public void addShowBooking(BookingItem b){
+		showBooking.add(b);
+	}
+	
+	
+}

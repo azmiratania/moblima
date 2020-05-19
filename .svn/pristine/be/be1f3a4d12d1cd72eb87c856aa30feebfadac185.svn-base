@@ -1,0 +1,55 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+
+public class MoblimaApp {
+	
+	public static ArrayList<CineplexItem> cineplexList = ReadData.readCineplex();
+	public static ArrayList<MovieItem> movieList = ReadData.readMovie();
+	public static ArrayList<GoerItem> goerList = ReadData.readGoer();
+	public static ArrayList<Cinema> cinemaList = ReadData.readCinema();
+	public static ArrayList<ShowItem> showList = ReadData.readShow();
+	// public static ArrayList<StaffItem> staffList = 
+	
+	public static void main(String[] args) {
+		
+		int choice; 
+		//sample data 
+		
+		
+    	Scanner sc = new Scanner(System.in); 
+    	do { 
+    		System.out.println("Enter your choice: "); 
+			System.out.println("1:  List movie for booking"); 
+			System.out.println("2:  Check booking history"); 
+			System.out.println("3:  Configure System Setting (for staff only)"); 
+			System.out.println("4:  Test: Add new show"); 
+			System.out.println("5:  Exit "); 
+			choice = sc.nextInt(); 
+			
+			switch(choice){
+			case 1:
+				ManageBooking.book();
+				break;
+			case 2:
+				ManageGoer.getGoerHistory();
+				break;
+			case 3:
+				System.out.println("To be done");
+				//config system for staff only
+				break;
+			case 4:
+				//this case is just for testing, will be removed latter
+				//The function add new show has already been done, to call, put ManageShow.add();
+				ManageShow.add();	
+				break;
+			default : 
+				System.out.println("Invalid input");
+				break;
+			}
+		
+    	} while(choice!=5);
+    	System.out.println("Program terminating...");
+	}
+	
+}

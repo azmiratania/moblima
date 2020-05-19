@@ -1,0 +1,228 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class ManageMovie {
+	
+	public static Scanner sc=new Scanner(System.in);
+	
+	public static String addMovieName()
+	{
+		System.out.println("Movie name:");
+		String movieName=sc.nextLine();
+		return movieName;
+	}
+	
+	public void addMovie() throws IOException
+	{
+		String movieName=addMovieName();
+		movieStatusListing();
+		System.out.println("Movie status:");
+		if(!sc.hasNextInt())
+			System.out.println("Error: Invalid input.");
+		else
+		{
+			int movieStatus=sc.nextInt();
+			if(movieStatus>=Constant.movieStatus.length)
+				System.out.println("Error: Invalid choice.");
+			else
+			{
+				movieRatingListing();
+				System.out.println("Movie rating:");
+				if(!sc.hasNextInt())
+					System.out.println("Error: Invalid input.");
+				else
+				{
+					int movieRating=sc.nextInt();
+					if(movieRating>=Constant.movieRating.length)
+						System.out.println("Error: Invalid choice.");
+					else
+					{
+						movieTypeListing();
+						System.out.println("Movie type:");
+						if(!sc.hasNextInt())
+							System.out.println("Error: Invalid input.");
+						else
+						{
+							int movieType=sc.nextInt();
+							if(movieType>=Constant.movieClass.length)
+								System.out.println("Error: Invalid choice.");
+							else
+							{
+								MovieItem movieItem=new MovieItem(movieName,movieStatus,movieRating,movieType);
+								MoblimaApp.movieList.add(movieItem);
+								ManageData data= new ManageData();
+								data.writeMovie(movieItem);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("null")
+	public void updateMovie() throws IOException
+	{
+		System.out.println("ID\tMovie Name\t\tType Rating \t Status");
+		System.out.println("--------------------------------------------------------------");
+		for (int i=0;i<MoblimaApp.movieList.size();i++)
+			System.out.println(i+"\t"+MoblimaApp.movieList.get(i).getMovieInfo());
+		System.out.println();
+		System.out.println("Choose movie ID to update:");
+		if(!sc.hasNextInt())
+			System.out.println("Error: Invalid input.");
+		else
+		{
+			int updateMovieID=sc.nextInt();
+			if(updateMovieID>=MoblimaApp.movieList.size())
+				System.out.println("Error: Invalid choice.");
+			else
+			{
+				MovieItem updateMovieItem=MoblimaApp.movieList.get(updateMovieID);
+				System.out.println("Choose one option below");
+				System.out.println("1. Update movie name");
+				System.out.println("2. Update movie status");
+				System.out.println("3. Update movie rating");
+				System.out.println("4. Update movie type");
+				if(!sc.hasNextInt())
+					System.out.println("Error: Invalid input.");
+				else
+				{
+					int choice=sc.nextInt();
+					if(choice>=5)
+						System.out.println("Error: Invalid choice.");
+					else
+					{
+						File movieOriginal=new File("C:\\data\\movie.txt");
+						BufferedReader br=new BufferedReader(new FileReader(movieOriginal));
+						File movieTemp=new File("C:\\data\\movieTemp.txt");
+						PrintWriter pw=new PrintWriter(new FileWriter(movieTemp));
+						String movieLine=null;
+						while((movieLine=br.readLine())!=null)
+						{
+							if(movieLine.contains(updateMovieItem.getMovieName()))
+							{
+								if(choice==1)
+								{
+									System.out.println("New movie name:");
+									sc.nextLine();
+									String updateMovieName=sc.nextLine();
+									String strMovieName=movieLine.substring(0,movieLine.indexOf(","));
+									if(strMovieName!=null||!strMovieName.trim().isEmpty())
+										movieLine=updateMovieName+movieLine.substring((movieLine.indexOf(",")),movieLine.length());
+								}
+								else if(choice==2)
+								{
+									movieStatusListing();
+									System.out.println("New movie status:");
+									if(!sc.hasNextInt())
+										System.out.println("Error: Invalid input.");
+									else
+									{
+										int updateMovieStatus=sc.nextInt();
+										if(updateMovieStatus>=Constant.movieStatus.length)
+											System.out.println("Error: Invalid choice.");
+										else
+										{
+											String strMovieStatus=movieLine.substring((movieLine.indexOf(",")+1),(movieLine.indexOf(",")+2));
+											if(strMovieStatus!=null||!strMovieStatus.trim().isEmpty())
+												movieLine=movieLine.substring(0,(movieLine.indexOf(",")+1))+updateMovieStatus+movieLine.substring((movieLine.indexOf(",")+2),movieLine.length());
+												
+										}
+									}
+								}
+								else if(choice==3)
+								{
+									movieRatingListing();
+									System.out.println("Movie rating:");
+									if(!sc.hasNextInt())
+										System.out.println("Error: Invalid input.");
+									else
+									{
+										int updateMovieRating=sc.nextInt();
+										if(updateMovieRating>=Constant.movieRating.length)
+											System.out.println("Error: Invalid choice.");
+										else
+										{
+											String strMovieRating=movieLine.substring((movieLine.indexOf(",")+3),(movieLine.indexOf(",")+4));
+											if(strMovieRating!=null||!strMovieRating.trim().isEmpty())
+												movieLine=movieLine.substring(0,(movieLine.indexOf(",")+3))+updateMovieRating+movieLine.substring((movieLine.indexOf(",")+4),movieLine.length());
+										}
+									}
+								}
+								else if(choice==4)
+								{
+									movieTypeListing();
+									System.out.println("Movie type:");
+									if(!sc.hasNextInt())
+										System.out.println("Error: Invalid input.");
+									else
+									{
+										int updateMovieType=sc.nextInt();
+										if(updateMovieType>=Constant.movieClass.length)
+											System.out.println("Error: Invalid choice.");
+										else
+										{
+										String strMovieType=movieLine.substring((movieLine.indexOf(",")+5),(movieLine.indexOf(",")+6));
+										if(strMovieType!=null||!strMovieType.trim().isEmpty())
+											movieLine=movieLine.substring(0,(movieLine.indexOf(",")+5))+updateMovieType+movieLine.substring((movieLine.indexOf(",")+6),movieLine.length());
+									
+										}
+									}
+								}
+							}
+							pw.println(movieLine);
+							pw.flush();
+						}
+						pw.close();
+						br.close();
+						System.out.println("Done updating movie.");
+						
+						if(!movieOriginal.delete())
+						{
+							System.out.println("Could not delete file.");
+							return;
+						}
+						if(!movieTemp.renameTo(movieOriginal))
+							System.out.println("Could not rename file.");
+					}
+				}
+			}
+		}
+		ManageData data = new ManageData();
+		data.resetMovie();
+	}
+	
+	public static void movieStatusListing()
+	{
+		System.out.println("ID\tMovie status");
+		System.out.println("--------------------------------------------");
+		for(int i=0;i<Constant.movieStatus.length;i++)
+			System.out.println(i+" \t"+Constant.movieStatus[i]);
+		System.out.println();
+	}
+	
+	public static void movieRatingListing()
+	{
+		System.out.println("ID\tMovie rating");
+		System.out.println("--------------------------------------------");
+		for(int i=0;i<Constant.movieRating.length;i++)
+			System.out.println(i+" \t"+Constant.movieRating[i]);
+		System.out.println();
+	}
+	
+	public static void movieTypeListing()
+	{
+		System.out.println("ID\tMovie type");
+		System.out.println("--------------------------------------------");
+		for(int i=0;i<Constant.movieClass.length;i++)
+			System.out.println(i+" \t"+Constant.movieClass[i]);
+		System.out.println();
+	}
+
+}

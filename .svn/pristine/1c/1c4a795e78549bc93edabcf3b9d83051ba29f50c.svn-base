@@ -1,0 +1,62 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.*;
+
+public class MoblimaApp {
+	
+	
+	public static ArrayList<CineplexItem> cineplexList = ManageData.readCineplex();
+	public static ArrayList<MovieItem> movieList = ManageData.readMovie();
+	public static ArrayList<GoerItem> goerList = ManageData.readGoer();
+	public static ArrayList<CinemaItem> cinemaList = ManageData.readCinema();
+	public static ArrayList<ShowItem> showList = ManageData.readShow();
+	public static ArrayList<BookingItem> bookingList = ManageData.readBooking();
+	public static ArrayList<String> publicHoliday = ManageData.readHoliday();
+	// public static ArrayList<StaffItem> staffList = 
+	
+	public static void main(String[] args) throws IOException {
+		
+		int choice = 0; 
+		//sample data 
+    	@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in); 
+    	do { 
+    		System.out.println("Enter your choice: "); 
+			System.out.println("1:  List movie for booking"); 
+			System.out.println("2:  Check booking history"); 
+			System.out.println("3:  Configure System Setting (for staff only)"); 
+			System.out.println("4:  Test: Add new show"); 
+			System.out.println("5:  Exit "); 
+			if(!sc.hasNextInt() ){
+				System.out.println("Error! Invalid input");
+				sc.nextLine();
+			} else {
+				choice = sc.nextInt(); 
+				switch(choice){
+				case 1:
+					ManageBooking.book();
+					goerList = ManageData.readGoer();	//reset goer
+					bookingList = ManageData.readBooking();	//reset booking
+					break;
+				case 2:
+					ManageGoer.getGoerHistory();
+					break;
+				case 3:
+					System.out.println("To be done");
+					//config system for staff only
+					break;
+				case 4:
+					//this case is just for testing, will be removed latter
+					//The function add new show has already been done, to call, put ManageShow.add();
+					ManageShow.add();	
+					break;
+				default : 
+					System.out.println("Invalid input");
+					break;
+				}
+			}
+    	} while(choice!=5);
+    	System.out.println("Program terminating...");
+	}
+	
+}

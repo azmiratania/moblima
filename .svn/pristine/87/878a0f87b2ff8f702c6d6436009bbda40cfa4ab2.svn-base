@@ -1,0 +1,60 @@
+
+public class BookingItem {
+
+	private String transactionId;
+	private GoerItem bookingGoer;
+	private SeatItem bookingSeat;
+	private ShowItem bookingShow;
+	private double bookingPayment;
+	
+	public BookingItem(String date, GoerItem goer, SeatItem seat, ShowItem show){
+		bookingGoer	= goer;
+		bookingSeat	= seat;
+		bookingShow	= show;
+		transactionId = bookingShow.getShowCinema().getCinema().getCinemaCode()+date;
+		bookingPayment = calculatePayment();  
+		bookingGoer.addGoerBooking(this);
+		bookingShow.addShowBooking(this);
+		//  now do the actual booking
+		bookingShow.getShowCinema().bookSeat(seat);
+	}
+	
+	public String getTransactionId(){
+		return transactionId;
+	}
+	public GoerItem getBookingGoer(){
+		return bookingGoer;
+	}
+	public SeatItem getBookingSeat(){
+		return bookingSeat;
+	}
+	public ShowItem getbookingShow(){
+		return bookingShow;
+	}
+	public double getBookingPayment(){
+		return bookingPayment;
+	}
+	public void printBooking(){
+		System.out.println("Transaction ID: "+transactionId);
+		System.out.println("Movie: "+ this.getbookingShow().getShowMovie().getMovieName());
+		System.out.println("Date: "+ this.getbookingShow().getShowDate());
+		System.out.println("Time: "+ this.getbookingShow().getShowTime());
+		System.out.println("Seat: "+ this.getBookingSeat().getSeatId());
+		System.out.println("Payment: "+ this.getBookingPayment());
+		System.out.println();
+	}
+	public double calculatePayment(){
+		double amount = Constant.priceDefault;
+		
+		if (bookingShow.getShowMovie().getMovieType()!=0){						//movie type
+			amount=amount*1.1;
+		}
+		if (bookingShow.getShowCinema().getCinema().getCinemaClass()!=0){		//cinema type
+			amount=amount*1.1;
+		}
+		if (bookingGoer.getGoerClass()!=0){
+			amount=amount*0.9;													//goer
+		}
+		return amount;
+	}
+}

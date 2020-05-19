@@ -1,0 +1,69 @@
+public class CinemaItem {
+	
+	private SeatItem[][] seatList;
+	private Cinema cinema;
+	// move to constance
+
+	public CinemaItem(Cinema c){
+		cinema = c;
+		int row = cinema.getCinemaRow();
+		int column = cinema.getCinemaColumn();
+		seatList = new SeatItem[row][column];
+		for (int i = 0; i< row ; i++){				
+			for (int j = 0 ; j < column; j++){
+				String seatId = String.valueOf(Constant.rowCode[j])+String.valueOf(i);
+				seatList[i][j]= new SeatItem(seatId);
+			}
+		}
+	}
+	public Cinema getCinema(){
+		return cinema;
+	}
+	
+	public void printCinema()
+	{
+		System.out.println("\t=====================Screen=================== ");
+		System.out.print("\t ");
+		for (int i =0; i<seatList[0].length;i++){
+			System.out.print(Constant.rowCode[i]+"    ");
+		}
+		System.out.println();
+		for (int i=0; i<seatList.length;i++){
+			System.out.print((i)+"\t");
+			for (int j = 0 ; j < seatList[0].length ; j++){
+				seatList[i][j].printSeat();
+			}System.out.println();
+		}	
+	}
+	public void bookSeat(SeatItem seat){
+		seat.assign();
+	}
+	public SeatItem getSeat(String seatId){
+		for (int i = 0 ; i < seatList.length; i++){
+			for (int j = 0 ; j < seatList[0].length; j++){
+				if (seatList[i][j].getSeatId().equals(seatId)){
+					return seatList[i][j];
+				}
+			}
+		}
+		return null;
+	}
+	public boolean validateSeatId(String seatId){
+		boolean check = false;
+		for (int i = 0 ; i < seatList.length; i++){
+			for (int j = 0 ; j < seatList[0].length; j++){
+				if (seatList[i][j].getSeatId().equals(seatId)==true){
+					check = true;
+					if(seatList[i][j].isOccupied()){
+						return false;
+					}
+				}
+				
+			}
+		}
+		return check;
+	}
+}
+	
+
+

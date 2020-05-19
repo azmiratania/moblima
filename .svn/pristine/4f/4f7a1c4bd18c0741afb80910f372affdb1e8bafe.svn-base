@@ -1,0 +1,34 @@
+
+public class ReportbyCineplex extends ManageReport {
+	public void printReport() {
+		CineplexItem cineplexItem;
+		System.out.println("---------Sale revenue by Cineplex---------");
+		
+		for (int i = 0 ; i <MoblimaApp.cineplexList.size(); i++){
+			double total = 0;
+			cineplexItem = MoblimaApp.cineplexList.get(i);
+			System.out.println("------------------------------------------");
+			System.out.println(i+"  "+MoblimaApp.cineplexList.get(i).getCineplexName());
+			System.out.println("------------------------------------------");
+			System.out.println("Transaction ID\t\tMovie Name\t\tType\tRating\tStatus\t\tDate\t\tTime\tCinema\tCineplex\t\tPayment");
+			
+			//check for shows of this Cineplex
+			for (int j=0; j<MoblimaApp.showList.size();j++) {
+				ShowItem showItem = MoblimaApp.showList.get(j);
+				if (CineplexShow(cineplexItem,showItem)) {
+					//check the booking of this show
+					for (int k=0; k<MoblimaApp.bookingList.size();k++) {
+						BookingItem bookingItem = MoblimaApp.bookingList.get(k);
+						if (ShowBook(showItem,bookingItem)) {
+							// show is booked >> get info
+							total = printInfo(total, bookingItem);							
+						}
+					}
+				}
+			}
+			System.out.println("------------------------------------------");
+			System.out.println("Total revenue"+"\t\t"+total);
+			System.out.println();
+		}
+	}
+}

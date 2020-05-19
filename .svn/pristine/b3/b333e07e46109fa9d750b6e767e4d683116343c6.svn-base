@@ -1,0 +1,59 @@
+import java.io.IOException;
+import java.util.Scanner;
+
+public class ManageShow {
+	public static void add() throws IOException{
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter cineplex ID: ");
+		Function.cineplexListing();
+		CineplexItem cineplex = MoblimaApp.cineplexList.get(sc.nextInt());
+		
+		System.out.println("Enter Cinema Code: ");
+		Function.cinemaListing(cineplex);
+		int cinemaIndex = sc.nextInt();
+		CinemaItem cinema = MoblimaApp.cinemaList.get(cinemaIndex);
+		
+		System.out.println("Enter date: <yyyymmdd>");
+		sc.nextLine();
+		String date = sc.nextLine();
+		
+		System.out.println("Enter time: <hhmm>");
+		String time = sc.nextLine();
+		
+		//check availability
+		boolean check = checkCinemaAvailability(cineplex, cinema.getCinemaCode() ,time,date);
+		if (check == false) {
+			System.out.println("Cinema "+cinema.getCinemaCode()+" is not available at this datetime");
+		}
+		else {
+			System.out.println("Enter movie ID: ");
+			Function.movieListing();
+			MovieItem movie = MoblimaApp.movieList.get(sc.nextInt());
+			
+			check = createShow(movie, date, time, cineplex, cinema);
+			if (check == true){
+				System.out.println("Show created successfully");
+			} else {
+				System.out.println("Error! Please contact admin");
+			}
+		}
+	}
+	private static boolean createShow(MovieItem movie, String date, String time, CineplexItem cineplex , CinemaItem cinema) throws IOException{
+		ShowItem s = new ShowItem(movie, date, time, cineplex, cinema);
+		{
+			s.writeShow();
+			return true;
+		}
+	}
+	private static boolean checkCinemaAvailability(CineplexItem cl, String cinemaCode, String time, String date){
+		for (int  i = 0; i<cl.getCineplexShow().size();i++){
+			if ((cl.getCineplexShow().get(i).getShowDate().equals(date)==true)&&
+					((cl.getCineplexShow().get(i).getShowTime().equals(time)==true)&&
+							((cl.getCineplexShow().get(i).getShowCinema().getCinemaCode().equals(cinemaCode)==true)))){
+						return false;
+			}
+		}
+		return true;
+	}
+}

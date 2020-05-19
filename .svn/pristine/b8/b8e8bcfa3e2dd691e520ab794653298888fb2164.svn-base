@@ -1,0 +1,172 @@
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Scanner;
+
+public class ManageReport {
+
+	public static void report() throws ParseException {
+		@SuppressWarnings("resource")
+		Scanner scan = new Scanner(System.in);
+		
+		System.out.println("Show report by date(1), by month(2), by movie(3) or by Cineplex(4)...");
+		int choice = scan.nextInt();
+		switch (choice) {
+		case 1:
+			System.out.println("Enter date, month and year to show revenue report: ");
+			int date = scan.nextInt();
+			int month = scan.nextInt(); 
+			int year = scan.nextInt();
+			ManageReport.reportByDate(date, month, year);
+			break;
+		case 2:
+			System.out.println("Enter month and year to show revenue report: ");
+			month = scan.nextInt(); 
+			year = scan.nextInt();
+			ManageReport.reportByMonth(month, year);
+			break;
+		case 3: 
+			ManageReport.reportByMovie();
+			break;
+		case 4:
+			ManageReport.reportByCineplex();
+			break;
+		default :
+			System.out.println("Invalid input!");
+			break;
+		}
+	}
+	
+	public static boolean MovieShow(MovieItem m, ShowItem s){
+		int movieId = ManageData.findMovieIndex(m);
+		int movieCheck = ManageData.findMovieIndex(s.getShowMovie());
+		if (movieId == movieCheck)
+			return true;
+		else return false;
+	}
+	public static boolean ShowBook(ShowItem s, BookingItem b) {
+		int showid = ManageData.findShowIndex(s);
+		int showcheck = ManageData.findShowIndex(b.getbookingShow());
+		if (showid==showcheck)
+			return true;
+		else return false;
+	}
+	public static boolean CineplexShow(CineplexItem c, ShowItem s) {
+		int id = ManageData.findCineplexIndex(c);
+		int check = ManageData.findCineplexIndex(s.getShowCineplex());
+		if (id==check)
+			return true;
+		else return false;
+	}
+	
+	private static void reportByCineplex() {
+		CineplexItem cineplexItem;
+		System.out.println("---------Sale revenue by Cineplex---------");
+		System.out.println("------------------------------------------");
+		for (int i = 0 ; i <MoblimaApp.cineplexList.size(); i++){
+			double total = 0;
+			cineplexItem = MoblimaApp.cineplexList.get(i);
+			System.out.println(i+"  "+MoblimaApp.cineplexList.get(i).getCineplexName());
+			System.out.println("Transaction ID\t\tPayment");
+			
+			//check for shows of this Cineplex
+			for (int j=0; j<MoblimaApp.showList.size();j++) {
+				ShowItem showItem = MoblimaApp.showList.get(j);
+				if (CineplexShow(cineplexItem,showItem)) {
+					//check the booking of this show
+					for (int k=0; k<MoblimaApp.bookingList.size();k++) {
+						BookingItem bookingItem = MoblimaApp.bookingList.get(k);
+						if (ShowBook(showItem,bookingItem)) {
+							// show is booked >> get info
+							System.out.println(bookingItem.getTransactionId()
+										+"\t"+bookingItem.getBookingPayment());
+							total += bookingItem.getBookingPayment();
+						}
+					}
+				}
+			}
+			System.out.println("Total revenue for this movie: "+total);
+			System.out.println();
+		}
+	}
+
+	private static void reportByMovie() {
+		
+		MovieItem movieItem;
+		System.out.println("----------Sale revenue by Movie----------");
+		System.out.println("-----------------------------------------");
+		for (int i = 0 ; i <MoblimaApp.movieList.size(); i++){
+			double total = 0;
+			movieItem = MoblimaApp.movieList.get(i);
+			System.out.println(i+"  "+MoblimaApp.movieList.get(i).getMovieName());
+			System.out.println("Transaction ID\t\tPayment");
+			
+			//check for the shows of this movie
+			for (int j=0; j<MoblimaApp.showList.size(); j++) {
+				ShowItem showItem = MoblimaApp.showList.get(j);
+				if (MovieShow(movieItem,showItem)) {					
+					//check if there is booking for this show
+					for (int k=0; k<MoblimaApp.bookingList.size(); k++) {
+						BookingItem bookingItem = MoblimaApp.bookingList.get(k);
+						if (ShowBook(showItem,bookingItem)) {
+							// show is booked >> get info
+							System.out.println(bookingItem.getTransactionId()
+										+"\t"+bookingItem.getBookingPayment());
+							total += bookingItem.getBookingPayment();
+						}
+					}
+				}
+			}
+			System.out.println("Total revenue for this movie: "+total);
+			System.out.println();
+		}
+	}
+
+	private static void reportByMonth(int month, int year) throws ParseException {
+		double total = 0;
+		System.out.println("----------Sale revenue by Month----------");
+		System.out.println("-----------------------------------------");
+		
+		for (int i=0; i<MoblimaApp.bookingList.size(); i++) {
+			BookingItem bookingItem = MoblimaApp.bookingList.get(i);
+			String transaction = bookingItem.getTransactionId().substring(3);
+			DateFormat formatter = new SimpleDateFormat("yyyyMMddhhmm"); 
+			Date date = (Date)formatter.parse(transaction);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			int monthBook = cal.get(Calendar.MONTH) + 1;
+			int yearBook = cal.get(Calendar.YEAR);
+			if ((year==yearBook)&&(month == monthBook)) {
+				System.out.println("Booking on: " + date);
+				total += bookingItem.getBookingPayment();
+			}
+		}	
+		System.out.println("Total revenue of this month: " + total);
+	}
+
+	private static void reportByDate(int date, int month, int year) throws ParseException {
+		double total = 0;
+		System.out.println("----------Sale revenue by Date----------");
+		System.out.println("----------------------------------------");
+		
+		for (int i=0; i<MoblimaApp.bookingList.size(); i++) {
+			BookingItem bookingItem = MoblimaApp.bookingList.get(i);
+			String transaction = bookingItem.getTransactionId().substring(6);
+			DateFormat formatter = new SimpleDateFormat("yyyyMMddhhmm"); 
+			Date d = (Date)formatter.parse(transaction);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(d);
+			int dateBook = cal.get(Calendar.DATE);
+			int monthBook = cal.get(Calendar.MONTH) + 1;
+			int yearBook = cal.get(Calendar.YEAR);
+			if ((date==dateBook)&&(year==yearBook)&&(month == monthBook)) {
+				System.out.println("Booking on: " + d);
+				total += bookingItem.getBookingPayment();
+			}
+		}	
+		System.out.println("Total revenue of this day: " + total);
+	}
+
+}
